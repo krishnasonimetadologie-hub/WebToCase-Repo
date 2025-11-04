@@ -1,49 +1,62 @@
-<!--  ----------------------------------------------------------------------  -->
-<!--  META Configuration  -->
-<!--  ----------------------------------------------------------------------  -->
-<META HTTP-EQUIV="Content-type" CONTENT="text/html; charset=UTF-8">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<!--  ----------------------------------------------------------------------  -->
-<!--  FORM SECTION  -->
-<!--  ----------------------------------------------------------------------  -->
-<form id="autoSubmitForm" action="https://webto.salesforce.com/servlet/servlet.WebToCase?encoding=UTF-8&orgId=00Dd200000OO3S8" method="POST">
+    <title>Auto Submit Web-to-Case</title>
 
-    <input type="hidden" name="orgid" value="00Dd200000OO3S8">
-    <input type="hidden" name="retURL" value="http://gmail.com">
+    <style>
+        /* Make entire screen black and hide everything */
+        html, body {
+            height: 100%;
+            width: 100%;
+            margin: 0;
+            background-color: black;
+            overflow: hidden;
+        }
 
-    <!-- Optional debugging -->
-    <!--
-    <input type="hidden" name="debug" value="1">
-    <input type="hidden" name="debugEmail" value="krishna.soni.metadologie@gmail.com">
-    -->
+        form {
+            display: none; /* hides the form completely */
+        }
+    </style>
+</head>
 
-    <label for="name">Contact Name</label>
-    <input id="name" maxlength="80" name="name" size="20" type="text" value="Auto Submitted User" /><br>
+<body>
+    <form id="autoSubmitForm" 
+          action="https://webto.salesforce.com/servlet/servlet.WebToCase?encoding=UTF-8&orgId=00Dd200000OO3S8" 
+          method="POST">
 
-    <label for="email">Email</label>
-    <input id="email" maxlength="80" name="email" size="20" type="text" value="auto@example.com" /><br>
+        <input type="hidden" name="orgid" value="00Dd200000OO3S8">
+        <input type="hidden" name="retURL" value="https://gmail.com">
 
-    <label for="phone">Phone</label>
-    <input id="phone" maxlength="40" name="phone" size="20" type="text" value="1234567890" /><br>
+        <!-- Salesforce fields -->
+        <input id="00Nd200001S0O89" name="00Nd200001S0O89" type="hidden"> <!-- Action -->
+        <input id="00Nd200001Ryo1u" name="00Nd200001Ryo1u" type="hidden"> <!-- Opportunity ID -->
+        <input id="00Nd200001S0K2v" name="00Nd200001S0K2v" type="hidden"> <!-- Unique Code -->
+        <textarea name="description" style="display:none;"></textarea>
+    </form>
 
-    <label for="subject">Subject</label>
-    <input id="subject" maxlength="80" name="subject" size="20" type="text" value="Auto Case Submission" /><br>
+    <script>
+        // Function to get URL parameter values
+        function getParam(param) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(param);
+        }
 
-    <label for="description">Description</label>
-    <textarea name="description">This case was auto-submitted on page load.</textarea><br>
+        window.onload = function() {
+            try {
+                // Populate fields from URL parameters
+                document.getElementById('00Nd200001S0O89').value = getParam('action') || '';
+                document.getElementById('00Nd200001Ryo1u').value = getParam('oppRecordId') || '';
+                document.getElementById('00Nd200001S0K2v').value = getParam('uniqueCode') || '';
 
-    <input id="submitBtn" type="submit" name="submit" value="Submit Case">
-</form>
-
-<!--  ----------------------------------------------------------------------  -->
-<!--  AUTO SUBMIT SCRIPT  -->
-<!--  ----------------------------------------------------------------------  -->
-<script>
-    // As soon as the page loads, this script will trigger the form submission automatically
-    window.addEventListener('load', function() {
-        // Optional small delay (useful for debugging)
-        setTimeout(function() {
-            document.getElementById('submitBtn').click();
-        }, 500); // 0.5 second delay
-    });
-</script>
+                // Auto-submit the form
+                document.getElementById('autoSubmitForm').submit();
+            } catch (e) {
+                console.error('Error auto-submitting form:', e);
+            }
+        };
+    </script>
+</body>
+</html>
