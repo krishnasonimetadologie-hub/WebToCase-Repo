@@ -7,17 +7,51 @@
     <title>Auto Submit Web-to-Case</title>
 
     <style>
-        /* Make entire screen black and hide everything */
         html, body {
             height: 100%;
             width: 100%;
             margin: 0;
             background-color: black;
-            overflow: hidden;
+            color: white;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         form {
-            display: none; /* hides the form completely */
+            display: none;
+            background-color: #1a1a1a;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(255,255,255,0.2);
+        }
+
+        textarea {
+            width: 300px;
+            height: 120px;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #555;
+            resize: none;
+            background-color: #000;
+            color: #fff;
+            font-size: 14px;
+        }
+
+        button {
+            margin-top: 10px;
+            background-color: #ff4c4c;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background-color: #ff6666;
         }
     </style>
 </head>
@@ -30,13 +64,19 @@
         <input type="hidden" name="orgid" value="00Dd200000OO3S8">
         <input type="hidden" name="retURL" value="https://gmail.com">
 
-        <!-- Salesforce fields -->
+        <!-- Hidden Salesforce fields -->
         <input id="00Nd200001S0O89" name="00Nd200001S0O89" type="hidden"> <!-- Action -->
         <input id="00Nd200001Ryo1u" name="00Nd200001Ryo1u" type="hidden"> <!-- Opportunity ID -->
         <input id="00Nd200001S0K2v" name="00Nd200001S0K2v" type="hidden"> <!-- Unique Code -->
-        <label for="email">Email</label><input  id="email" maxlength="80" name="email" size="20" type="text" value="krishnasonimr1@gmail.com"/><br>
 
-        <textarea name="description" style="display:none;"></textarea>
+        <input id="email" name="email" type="hidden" value="krishnasonimr1@gmail.com"/>
+
+        <!-- Comment field (shown only for rejection) -->
+        <div id="commentSection" style="display:none;">
+            <label for="description">Please provide a reason for rejection:</label><br>
+            <textarea id="description" name="description" required></textarea><br>
+            <button type="submit">Submit</button>
+        </div>
     </form>
 
     <script>
@@ -47,16 +87,25 @@
         }
 
         window.onload = function() {
-            try {
-                // Populate fields from URL parameters
-                document.getElementById('00Nd200001S0O89').value = getParam('action') || '';
-                document.getElementById('00Nd200001Ryo1u').value = getParam('oppRecordId') || '';
-                document.getElementById('00Nd200001S0K2v').value = getParam('uniqueCode') || '';
+            const action = (getParam('action') || '').toLowerCase();
+            const oppId = getParam('oppRecordId') || '';
+            const uniqueCode = getParam('uniqueCode') || '';
 
-                // Auto-submit the form
-                document.getElementById('autoSubmitForm').submit();
-            } catch (e) {
-                console.error('Error auto-submitting form:', e);
+            const form = document.getElementById('autoSubmitForm');
+            const commentSection = document.getElementById('commentSection');
+
+            // Populate hidden fields
+            document.getElementById('00Nd200001S0O89').value = action;
+            document.getElementById('00Nd200001Ryo1u').value = oppId;
+            document.getElementById('00Nd200001S0K2v').value = uniqueCode;
+
+            if (action === 'rejected') {
+                // Show only comment box and submit button
+                form.style.display = 'block';
+                commentSection.style.display = 'block';
+            } else {
+                // Auto-submit for other actions
+                form.submit();
             }
         };
     </script>
